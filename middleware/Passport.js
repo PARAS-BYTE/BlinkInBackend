@@ -8,7 +8,7 @@ dotenv.config()
 passport.use("google-admin",new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/admin/auth/google/callback"
+    callbackURL: "https://blinkinbackend.onrender.com/admin/auth/google/callback"
 },
     async function (accessToken, refreshToken, profile, cb) {
         try {
@@ -33,7 +33,7 @@ passport.use("google-admin",new GoogleStrategy({
 passport.use("google-user",new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/user/auth/google/callback"
+    callbackURL: "https://blinkinbackend.onrender.com/user/auth/google/callback"
 },
     async function (accessToken, refreshToken, profile, cb) {
         try {
