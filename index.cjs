@@ -38,6 +38,8 @@ app.use(
 );
 
 // ===== Session Config =====
+const inProduction = process.env.NODE_ENV === "production";
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "KeyboardCat",
@@ -47,16 +49,19 @@ app.use(
       mongoUrl: "mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority"
     }),
     cookie: {
-      maxAge: 1000 * 60 * 60,  // 1 hour
+      maxAge: 1000 * 60 * 60, // 1 hour
       httpOnly: true,
-      secure: false,           // Must be false for localhost HTTP
-      sameSite: "lax"          // 'lax' fits localhost frontend + remote backend
+      secure: inProduction, // Use secure cookies in production
+      sameSite: inProduction ? "none" : "lax", // 'none' for cross-domain, 'lax' for same-domain
     }
   })
 );
 
 // Required for behind proxy (Render)
-app.set("trust proxy", 1);
+if (inProduction) {
+  app.set("trust proxy", 1); // trust first proxy
+}
+
 
 // ===== Routes =====
 app.use("/user", UserRouter);
