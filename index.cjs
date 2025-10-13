@@ -28,30 +28,37 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
-// ===== CORS =====
-app.use(cors({
-  origin: "http://localhost:5173",  // Keep same if frontend is local
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,               // Required for cookies
-}));
+// ss
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "KeyboardCat",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: "mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority"
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60, // 1 hour
+      httpOnly: true,
+      secure: false,          // MUST be 'false' for localhost
+      sameSite: "lax",        // USE 'lax' for localhost frontend <-> remote backend
+    }
+  })
+)
+
+// CORS settings
+app.use(
+  cors({
+    origin: "http://localhost:5173", // or the localhost port your frontend runs on
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  })
+)
 
 // ===== Session =====
 app.set("trust proxy", 1); // REQUIRED for Render (behind proxy)
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || "KeyboardCat",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: "mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority"
-  }),
-  cookie: {
-    maxAge: 1000 * 60 * 60,  // 1 hour
-    httpOnly: true,
-    secure: false,           // keep false for local HTTP, set to true if frontend is HTTPS on Render
-    sameSite: "lax",         // allow localhost frontend; change to "none" if frontend is deployed on HTTPS
-  }
-}));
+
 
 // ===== Routes =====
 app.use("/user", UserRouter);

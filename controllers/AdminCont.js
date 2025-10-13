@@ -201,7 +201,9 @@ module.exports.getadmindetails = async (req, res, next) => {
    try {
 
       if (!req.session.admin) {
-         return res.status(302).send("Please Login First")
+         return res.status(401).send("Please Login First")
+
+         // return res.status(302).send("Please Login First")
       }
 
       let admin = await Admin.findOne({ _id: req.session.admin._id })
