@@ -29,31 +29,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
 // ===== CORS =====
-const FRONTEND_URL = process.env.NODE_ENV === "production" 
-  ? "https://your-frontend-domain.com"  // change to deployed frontend URL
-  : "http://localhost:5173";
-
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: "http://localhost:5173",  // Keep same if frontend is local
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,  // required to send cookies
+  credentials: true,               // Required for cookies
 }));
 
 // ===== Session =====
-app.set("trust proxy", 1); // trust first proxy (needed on Render)
+app.set("trust proxy", 1); // REQUIRED for Render (behind proxy)
 
 app.use(session({
   secret: process.env.SESSION_SECRET || "KeyboardCat",
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
+    mongoUrl: "mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority"
   }),
   cookie: {
-    maxAge: 1000 * 60 * 60, // 1 hour
+    maxAge: 1000 * 60 * 60,  // 1 hour
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // true on Render (HTTPS)
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: false,           // keep false for local HTTP, set to true if frontend is HTTPS on Render
+    sameSite: "lax",         // allow localhost frontend; change to "none" if frontend is deployed on HTTPS
   }
 }));
 
@@ -62,7 +58,6 @@ app.use("/user", UserRouter);
 app.use("/admin", AdminRouter);
 app.use("/product", ProductRouter);
 
-// ===== Cloudinary signature route =====
 app.post("/get-signature", async (req, res) => {
   const timestamp = Math.floor(Date.now() / 1000);
   const paramsToSign = { folder: "blinkin_uploads", timestamp };
@@ -84,10 +79,10 @@ app.post("/get-signature", async (req, res) => {
   });
 });
 
-// ===== MongoDB connection & server start =====
+// ===== MongoDB & server start =====
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect("mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority")
   .then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
