@@ -1,4 +1,4 @@
-// backend/index.js
+// server.cjs
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -20,7 +20,7 @@ const app = express();
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
+  api_secret: process.env.CLOUD_API_SECRET,
 });
 
 // ===== Middleware =====
@@ -29,10 +29,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
 // ===== CORS =====
+const FRONTEND_URL = process.env.NODE_ENV === "production" 
+  ? "https://your-frontend-domain.com"  // change to deployed frontend URL
+  : "http://localhost:5173";
+
 app.use(cors({
-  origin: "http://localhost:5173",  // frontend origin
+  origin: FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,               // important for cookies
+  credentials: true,  // required to send cookies
 }));
 
 // ===== Session =====
@@ -43,14 +47,14 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI || "mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority",
+    mongoUrl: process.env.MONGO_URI,
   }),
   cookie: {
     maxAge: 1000 * 60 * 60, // 1 hour
     httpOnly: true,
-    secure: false,          // must be false for localhost HTTP
-    sameSite: "lax",        // allows cookies from localhost frontend
-  },
+    secure: process.env.NODE_ENV === "production", // true on Render (HTTPS)
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  }
 }));
 
 // ===== Routes =====
@@ -83,7 +87,7 @@ app.post("/get-signature", async (req, res) => {
 // ===== MongoDB connection & server start =====
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGO_URI || "mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
