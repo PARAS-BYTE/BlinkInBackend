@@ -7,7 +7,9 @@ const Admin = require("../Models/Admin")
 
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: "smtp.gmail.com",
+    secure:false,
+    port:587,
     auth:
     {
         user: "raghavji014@gmail.com",
