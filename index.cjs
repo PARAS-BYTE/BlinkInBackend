@@ -28,7 +28,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 
-// ss
+// ===== CORS must come BEFORE session =====
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend URL
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  })
+);
+
+// ===== Session Config =====
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "KeyboardCat",
@@ -38,33 +47,23 @@ app.use(
       mongoUrl: "mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority"
     }),
     cookie: {
-      maxAge: 1000 * 60 * 60, // 1 hour
+      maxAge: 1000 * 60 * 60,  // 1 hour
       httpOnly: true,
-      secure: false,          // MUST be 'false' for localhost
-      sameSite: "lax",        // USE 'lax' for localhost frontend <-> remote backend
+      secure: false,           // Must be false for localhost HTTP
+      sameSite: "lax"          // 'lax' fits localhost frontend + remote backend
     }
   })
-)
+);
 
-// CORS settings
-app.use(
-  cors({
-    origin: "http://localhost:5173", // or the localhost port your frontend runs on
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"]
-  })
-)
-
-// ===== Session =====
-app.set("trust proxy", 1); // REQUIRED for Render (behind proxy)
-
-
+// Required for behind proxy (Render)
+app.set("trust proxy", 1);
 
 // ===== Routes =====
 app.use("/user", UserRouter);
 app.use("/admin", AdminRouter);
 app.use("/product", ProductRouter);
 
+// ===== Signature route =====
 app.post("/get-signature", async (req, res) => {
   const timestamp = Math.floor(Date.now() / 1000);
   const paramsToSign = { folder: "blinkin_uploads", timestamp };
@@ -86,7 +85,7 @@ app.post("/get-signature", async (req, res) => {
   });
 });
 
-// ===== MongoDB & server start =====
+// ===== MongoDB & Server Start =====
 const PORT = process.env.PORT || 5000;
 
 mongoose.connect("mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority")
