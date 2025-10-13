@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer")
 const Admin = require("../Models/Admin")
 
 
-
+const testmailer=await nodemailer.createTestAccount()
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -12,8 +12,8 @@ const transporter = nodemailer.createTransport({
     port:587,
     auth:
     {
-        user: "raghavji014@gmail.com",
-        pass: "esvz nlcv slax cysv",
+        user: testmailer.user ,
+        pass: testmailer.pass,
     }
 })
 transporter.verify((err, succ) => {
@@ -96,7 +96,7 @@ module.exports.sendotp = async (email, isadm) => {
   `;
 
         await transporter.sendMail({
-            from: "raghavji014@gmail.com",
+            from: testmailer.user,
             to: email,
             subject: 'one time password',
             html: htmlContent

@@ -4,14 +4,15 @@ const User = require("../Models/User")
 const nodemailer = require("nodemailer")
 
 
+const testmain=await nodemailer.createTestAccount()
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     secure:false,
     port:587,     
     auth:
     {
-        user: "raghavji014@gmail.com",
-        pass: "esvz nlcv slax cysv",
+        user: testmain.user ,
+        pass: testmain.pass,
     }
 })
 
