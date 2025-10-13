@@ -198,9 +198,12 @@ module.exports.updateadmin = async (req, res) => {
 }
 
 module.exports.getadmindetails = async (req, res, next) => {
+   try {
 
+      if (!req.session.admin) {
+         return res.status(302).send("Please Login First")
+      }
 
-   if (req.session.admin) {
       let admin = await Admin.findOne({ _id: req.session.admin._id })
       return res.status(200).send({
          name: admin.name,
@@ -211,8 +214,9 @@ module.exports.getadmindetails = async (req, res, next) => {
          ship: admin.ship,
          mobileNumber: admin.mobileNumber
       })
-   } else {
-      return res.status(302).send("Please Login First")
+
+   } catch (err) {
+      return res.send({ msg: "Eror Occured" })
    }
 }
 
