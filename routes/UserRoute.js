@@ -34,7 +34,7 @@ Router.get('/auth/google/callback',
     console.log("User page")
     req.session.user = req.user
     // Successful authentication, redirect home.
-    res.redirect("http://localhost:5173/user")
+    res.redirect("http://localhost:5173/user/home")
   });
 
 

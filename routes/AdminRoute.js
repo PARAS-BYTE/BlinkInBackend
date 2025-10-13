@@ -45,7 +45,7 @@ Router.get('/auth/google',
 Router.get('/auth/google/callback',
   passport.authenticate('google-admin', { failureRedirect: '/login' }),
   function (req, res) {
-    req.session.admin = req.user
+    req.session.admin = req.admin
     // Successful authentication, redirect home.
     res.redirect("http://localhost:5173/admin/home")
   });
