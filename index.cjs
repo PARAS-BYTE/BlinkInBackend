@@ -46,7 +46,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: "mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority"
+      mongoUrl: process.env.MONGO_URL,
     }),
     cookie: {
       maxAge: 1000 * 60 * 60, // 1 hour
@@ -92,7 +92,7 @@ app.post("/get-signature", async (req, res) => {
 // ===== MongoDB & Server Start =====
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect("mongodb+srv://parasji014_db_user:parasji@cluster1.1dip1zl.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(process.env.MONGO_URL)
   .then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
