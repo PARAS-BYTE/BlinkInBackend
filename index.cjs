@@ -70,25 +70,24 @@ app.use("/product", ProductRouter);
 
 // ===== Signature route =====
 app.post("/get-signature", async (req, res) => {
-  const timestamp = Math.floor(Date.now() / 1000);
-  const paramsToSign = { folder: "blinkin_uploads", timestamp };
-  const stringToSign = Object.keys(paramsToSign)
+  const timestamp = Math.floor((Date.now() / 1000));
+  const paramstosign = { folder: "blinkin_uploads", timestamp }
+  const stringtosign = Object.keys(paramstosign)
     .sort()
-    .map(k => `${k}=${paramsToSign[k]}`)
+    .map(k => `${k}=${paramstosign[k]}`)
     .join("&");
-
   const signature = crypto
     .createHash("sha1")
-    .update(stringToSign + process.env.CLOUD_API_SECRET)
+    .update(stringtosign + process.env.CLOUD_API_SECRET)
     .digest("hex");
-
   res.json({
-    ...paramsToSign,
+    ...paramstosign,
     signature,
     cloudName: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
-  });
-});
+  })
+})
+
 
 // ===== MongoDB & Server Start =====
 const PORT = process.env.PORT || 5000;
