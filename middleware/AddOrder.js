@@ -2,18 +2,18 @@ const Admin = require("../Models/Admin")
 const Product = require("../Models/Product")
 const User = require("../Models/User")
 const nodemailer = require("nodemailer")
+// const testmain = await nodemailer.createTestAccount()
 
-
-const testmain=await nodemailer.createTestAccount()
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    secure:false,
-    port:587,     
-    auth:
-    {
-        user: testmain.user ,
-        pass: testmain.pass,
-    }
+  service: "gmail",
+  host: "smtp.gmail.com",
+  secure: true,
+  port: 465,
+  auth:
+  {
+    user: "raghavji014@gmail.com",
+    pass: "esvz nlcv slax cysv",
+  }
 })
 
 // [
@@ -41,24 +41,24 @@ const transporter = nodemailer.createTransport({
 //         })
 
 function formatAddressForEmail(address) {
-    if (!address) {
-        return 'No address provided.';
-    }
-    // Build the address line by line, handling missing fields
-    let addressHtml = '';
-    if (address.location) addressHtml += `${address.location}<br>`;
-    if (address.district) addressHtml += `${address.district}, `;
-    if (address.state) addressHtml += `${address.state} `;
-    if (address.pincode) addressHtml += `- ${address.pincode}<br>`;
-    if (address.country) addressHtml += `${address.country}<br>`;
-    if (address.type?.type) addressHtml += `(${address.type.type} Address)`;
+  if (!address) {
+    return 'No address provided.';
+  }
+  // Build the address line by line, handling missing fields
+  let addressHtml = '';
+  if (address.location) addressHtml += `${address.location}<br>`;
+  if (address.district) addressHtml += `${address.district}, `;
+  if (address.state) addressHtml += `${address.state} `;
+  if (address.pincode) addressHtml += `- ${address.pincode}<br>`;
+  if (address.country) addressHtml += `${address.country}<br>`;
+  if (address.type?.type) addressHtml += `(${address.type.type} Address)`;
 
-    return addressHtml;
+  return addressHtml;
 }
 async function sendordermailtoadmin(email, address, mobilenumber, productname, qunantity, username) {
-    try {
-        let add
-        const htmlContent = `
+  try {
+    let add
+    const htmlContent = `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -145,25 +145,25 @@ async function sendordermailtoadmin(email, address, mobilenumber, productname, q
   </body>
   </html>
   `;
-        await transporter.sendMail({
-            from: "raghavji014@gmail.com",
-            to: email,
-            subject: `New Order Received for ${productname}`,
-            html: htmlContent,
-        })
-    } catch (err) {
-        console.log(err)
-    }
+    await transporter.sendMail({
+      from: "raghavji014@gmail.com",
+      to: email,
+      subject: `New Order Received for ${productname}`,
+      html: htmlContent,
+    })
+  } catch (err) {
+    console.log(err)
+  }
 }
 module.exports.sendordermailtoadmin = sendordermailtoadmin
 
 
 
 async function updatestaus(userid, productid, quantity, stage) {
-    try {
-        let user = await User.findById(userid)
-        let product = await Product.findById(productid)
-        const htmlContent = `
+  try {
+    let user = await User.findById(userid)
+    let product = await Product.findById(productid)
+    const htmlContent = `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -238,25 +238,25 @@ async function updatestaus(userid, productid, quantity, stage) {
   </html>
   `;
 
-        await transporter.sendMail({
-            from: "raghavji014@gmail.com",
-            to: user.email,
-            subject: `Your Order for ${productName} has been ${stage}`,
-            html: htmlContent
-        })
-    } catch (err) {
-        console.log(err)
-    }
+    await transporter.sendMail({
+      from: "raghavji014@gmail.com",
+      to: user.email,
+      subject: `Your Order for ${productName} has been ${stage}`,
+      html: htmlContent
+    })
+  } catch (err) {
+    console.log(err)
+  }
 }
 module.exports.updatestaus = updatestaus
 
 // await coupanused(some.seller, user.name, user.email)
 async function coupanused(sellerid, username, useremail, userMobilenumber, discount) {
-    try {
-        let seller = await Admin.findById(sellerid)
-        seller.coupanspend += discount
-        seller.save()
-        const htmlContent = `
+  try {
+    let seller = await Admin.findById(sellerid)
+    seller.coupanspend += discount
+    seller.save()
+    const htmlContent = `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -319,15 +319,15 @@ async function coupanused(sellerid, username, useremail, userMobilenumber, disco
   </html>
   `;
 
-        await transporter.sendMail({
-            to: seller.email,
-            from: "raghavji014@gmail.com",
-            subject: `Your Coupan is Claimed`,
-            html: htmlContent
-        })
+    await transporter.sendMail({
+      to: seller.email,
+      from: "raghavji014@gmail.com",
+      subject: `Your Coupan is Claimed`,
+      html: htmlContent
+    })
 
-    } catch (Err) {
-        console.log(Err)
-    }
+  } catch (Err) {
+    console.log(Err)
+  }
 }
 module.exports.coupanused = coupanused
