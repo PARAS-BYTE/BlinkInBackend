@@ -9,12 +9,12 @@ const Admin = require("../Models/Admin")
 const transporter = nodemailer.createTransport({
   service: "gmail",
   host: "smtp.gmail.com",
-  secure: true,
-  port: 465,
+  secure: false,
+  port: 587,
   auth:
   {
-    user: "raghavji014@gmail.com",
-    pass: "esvz nlcv slax cysv",
+    user: process.env.user,
+    pass: process.env.pass,
   }
 })
 transporter.verify((err, succ) => {
