@@ -188,7 +188,7 @@ async function updatestaus(userid, productid, quantity, stage) {
     <div class="container">
       <div class="header">Your Order Has Been Updated!</div>
       <div class="content">
-        <p>Hello <b>${userName}</b>,</p>
+        <p>Hello <b>${username}</b>,</p>
         <p>This is a notification regarding your recent order on Blikin Ecommerce.</p>
         <p><b>Product:</b> ${productName}<br><b>Quantity:</b> ${quantity}</p>
         <div class="status-box">
@@ -215,6 +215,7 @@ async function updatestaus(userid, productid, quantity, stage) {
     console.log(err)
   }
 }
+
 module.exports.updatestaus = updatestaus
 
 // await coupanused(some.seller, user.name, user.email)
