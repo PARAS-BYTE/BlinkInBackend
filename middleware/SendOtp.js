@@ -7,11 +7,7 @@ const resend=new Resend(process.env.RESEND_API_KEY)
 
 
 
-transporter.verify((err, succ) => {
-  if (!err) {
-    console.log('Nodemailer is Ready to send Mails')
-  }
-})
+
 module.exports.sendotp = async (email, isadm) => {
   try {
 
