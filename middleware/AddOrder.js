@@ -1,44 +1,11 @@
 const Admin = require("../Models/Admin")
 const Product = require("../Models/Product")
 const User = require("../Models/User")
-const nodemailer = require("nodemailer")
 // const testmain = await nodemailer.createTestAccount()
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  secure: true,
-  port: 465,
-  auth:
-  {
-    user: "raghavji014@gmail.com",
-    pass: "esvz nlcv slax cysv",
-  }
-})
-
-// [
-//   {
-//     id: {
-//       _id: new ObjectId('68de3c24b38373e2763d9805'), : Product Id 
-//       name: 'I phone 16 pro max',                    
-//       price: 2200,                                      
-//       seller: new ObjectId('68de352cb10e09b3566e4ca6'), : Seller Id
-//       imgurls: 'https://unsplash.com/photos/a-cell-phone-with-a-colorful-background-R8Pgjgqw8aw'
-//     },
-//     quantity: 1,
-//     _id: new ObjectId('68dec2053f0dd13a36689c67')
-//   }
-// ]
-
-// await sendordermailtoadmin(prd.email, user.address, user.mobileNumber, seller.name, el.quantit
+const {Resend}=require("resend")
+const resend=new Resend(process.env.RESEND_API_KEY)
 
 
-// await transporter.sendMail({
-//             from: "raghavji014@gmail.com",
-//             to: email,
-//             subject :'one time password',
-//             text: `Your Otp is ${otp}`
-//         })
 
 function formatAddressForEmail(address) {
   if (!address) {
@@ -145,8 +112,8 @@ async function sendordermailtoadmin(email, address, mobilenumber, productname, q
   </body>
   </html>
   `;
-    await transporter.sendMail({
-      from: "raghavji014@gmail.com",
+    await resend.emails.send({
+      from: "BlinkIn <onboarding@resend.dev>",
       to: email,
       subject: `New Order Received for ${productname}`,
       html: htmlContent,
@@ -238,8 +205,8 @@ async function updatestaus(userid, productid, quantity, stage) {
   </html>
   `;
 
-    await transporter.sendMail({
-      from: "raghavji014@gmail.com",
+    await resend.emails.send({
+      from: "BlinkIn <onboarding@resend.dev>",
       to: user.email,
       subject: `Your Order for ${productName} has been ${stage}`,
       html: htmlContent
@@ -319,9 +286,9 @@ async function coupanused(sellerid, username, useremail, userMobilenumber, disco
   </html>
   `;
 
-    await transporter.sendMail({
+    await resend.emails.send({
       to: seller.email,
-      from: "raghavji014@gmail.com",
+      from: "BlinkIn <onboarding@resend.dev>",
       subject: `Your Coupan is Claimed`,
       html: htmlContent
     })

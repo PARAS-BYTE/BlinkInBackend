@@ -85,7 +85,7 @@ module.exports.sendotp = async (email, isadm) => {
     await resend.emails.send({
       from: "BlinkIn <onboarding@resend.dev>",
       to: email,
-      subject: 'one time password',
+      subject: 'One time password',
       html: htmlContent
     })
 
