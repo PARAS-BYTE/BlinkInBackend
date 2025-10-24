@@ -188,9 +188,9 @@ async function updatestaus(userid, productid, quantity, stage) {
     <div class="container">
       <div class="header">Your Order Has Been Updated!</div>
       <div class="content">
-        <p>Hello <b>${username}</b>,</p>
+        <p>Hello <b>${user.name}</b>,</p>
         <p>This is a notification regarding your recent order on Blikin Ecommerce.</p>
-        <p><b>Product:</b> ${productName}<br><b>Quantity:</b> ${quantity}</p>
+        <p><b>Product:</b> ${product.name}<br><b>Quantity:</b> ${quantity}</p>
         <div class="status-box">
           <p style="margin: 0; font-size: 14px; color: #495057;">New Order Status:</p>
           <p class="status-text">${stage}</p>
@@ -208,7 +208,7 @@ async function updatestaus(userid, productid, quantity, stage) {
     await resend.emails.send({
       from: "BlinkIn <onboarding@resend.dev>",
       to: user.email,
-      subject: `Your Order for ${productName} has been ${stage}`,
+      subject: `Your Order for ${product.name} has been ${stage}`,
       html: htmlContent
     })
   } catch (err) {
