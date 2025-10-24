@@ -8,6 +8,7 @@ const cors = require("cors");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary").v2;
 const helmet = require("helmet");
+const passport=require("passport")
 
 const UserRouter = require("./routes/UserRoute.js");
 const AdminRouter = require("./routes/AdminRoute.js");
@@ -22,6 +23,7 @@ cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.CLOUD_API_SECRET,
 });
+
 
 // ===== Middleware =====
 app.use(express.json());
@@ -54,6 +56,8 @@ app.use(
     },
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
