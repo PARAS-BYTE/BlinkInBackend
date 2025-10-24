@@ -1,22 +1,12 @@
 const crypto = require("crypto")
 const User = require("../Models/User")
-const nodemailer = require("nodemailer")
+// const nodemailer = require("nodemailer")
 const Admin = require("../Models/Admin")
+const {Resend}=require("resend")
+const resend=new Resend(process.env.RESEND_API_KEY)
 
 
 
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  secure: false,
-  port: 587,
-  auth:
-  {
-    user: process.env.user,
-    pass: process.env.pass,
-  }
-})
 transporter.verify((err, succ) => {
   if (!err) {
     console.log('Nodemailer is Ready to send Mails')
@@ -96,7 +86,7 @@ module.exports.sendotp = async (email, isadm) => {
   </html>
   `;
 
-    await transporter.sendMail({
+    await resend.emails.send({
       from: "raghavji014@gmail.com",
       to: email,
       subject: 'one time password',
