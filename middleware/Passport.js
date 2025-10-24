@@ -58,15 +58,22 @@ passport.use("google-user",new GoogleStrategy({
 ));
 
 passport.serializeUser(function (user, done) {
-    done(null, user._id);
-})
-passport.deserializeUser(async function (id, done) {
-    try {
-        let user = await Admin.findById({ _id: id });
-        done(null, user)
-    } catch (err) {
-        done(err)
+  done(null, { id: user._id, type: user instanceof Admin ? "admin" : "user" });
+});
+
+passport.deserializeUser(async function (obj, done) {
+  try {
+    let user;
+    if (obj.type === "admin") {
+      user = await Admin.findById(obj.id);
+    } else {
+      user = await User.findById(obj.id);
     }
-})
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
+
 
 module.exports = passport

@@ -45,21 +45,18 @@ app.use(
     secret: process.env.SESSION_SECRET || "KeyboardCat",
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URL,
-    }),
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
     cookie: {
       maxAge: 1000 * 60 * 60, // 1 hour
       httpOnly: true,
-      secure: inProduction, // Use secure cookies in production
-      sameSite: inProduction ? "none" : "lax", // 'none' for cross-domain, 'lax' for same-domain
-    }
+      secure: process.env.NODE_ENV === "production", // must be true for HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    },
   })
 );
 
-// Required for behind proxy (Render)
-if (inProduction) {
-  app.set("trust proxy", 1); // trust first proxy
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
 }
 
 
